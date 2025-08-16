@@ -1,13 +1,24 @@
 FROM alpine:3 AS build
 
 ARG VERSION="2.90"
-ARG CHECKSUM="8f6666b542403b5ee7ccce66ea73a4a51cf19dd49392aaccd37231a2c51b303b"
 
-ADD https://www.thekelleys.org.uk/dnsmasq/dnsmasq-$VERSION.tar.gz /tmp/dnsmasq.tar.gz
+# Add dnsmasq archive and signature
+ADD https://thekelleys.org.uk/dnsmasq/dnsmasq-$VERSION.tar.gz /tmp/dnsmasq.tar.gz
+ADD https://thekelleys.org.uk/dnsmasq/dnsmasq-$VERSION.tar.gz.asc /tmp/dnsmasq.tar.gz.asc
 
-RUN [ "$(sha256sum /tmp/dnsmasq.tar.gz | awk '{print $1}')" = "$CHECKSUM" ] && \
-    apk add gcc linux-headers make musl-dev && \
-    tar -C /tmp -xf /tmp/dnsmasq.tar.gz && \
+# Install dependencies including GPG for signature verification
+RUN apk add --no-cache gcc linux-headers make musl-dev gnupg
+
+# Import Simon Kelley's public key and verify signature
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 15CDD6AEE11135A2 || \
+    gpg --keyserver keys.openpgp.org --recv-keys 15CDD6AEE11135A2 || \
+    gpg --keyserver pgp.mit.edu --recv-keys 15CDD6AEE11135A2
+
+# Verify the GPG signature
+RUN gpg --verify /tmp/dnsmasq.tar.gz.asc /tmp/dnsmasq.tar.gz
+
+# Extract and build dnsmasq
+RUN tar -C /tmp -xf /tmp/dnsmasq.tar.gz && \
     cd /tmp/dnsmasq-$VERSION && \
       make LDFLAGS="-static"
 
