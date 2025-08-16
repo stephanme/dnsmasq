@@ -9,10 +9,8 @@ ADD https://thekelleys.org.uk/dnsmasq/dnsmasq-$VERSION.tar.gz.asc /tmp/dnsmasq.t
 # Install dependencies including GPG for signature verification
 RUN apk add --no-cache gcc linux-headers make musl-dev gnupg
 
-# Import Simon Kelley's public key and verify signature
-RUN gpg --keyserver keyserver.ubuntu.com --recv-keys 15CDD6AEE11135A2 || \
-    gpg --keyserver keys.openpgp.org --recv-keys 15CDD6AEE11135A2 || \
-    gpg --keyserver pgp.mit.edu --recv-keys 15CDD6AEE11135A2
+# Import Simon Kelley's public key from official source
+RUN curl -s https://thekelleys.org.uk/srkgpg.txt | gpg --import
 
 # Verify the GPG signature
 RUN gpg --verify /tmp/dnsmasq.tar.gz.asc /tmp/dnsmasq.tar.gz
