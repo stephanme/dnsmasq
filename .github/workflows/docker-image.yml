@@ -6,7 +6,8 @@ on:
     branches:
       - 'main'
     tags:
-      - 'v*'
+      - '*'
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -29,6 +30,7 @@ jobs:
           type=ref,event=pr
           type=ref,event=branch
           type=ref,event=tag
+          type=ref,event=workflow_dispatch
           type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
