@@ -3,24 +3,14 @@
   "extends": [
     "config:recommended"
   ],
-  "regexManagers": [
+  "customManagers": [
     {
-      "fileMatch": ["^Dockerfile$"],
+      "customType": "regex",
+      "managerFilePatterns": ["/^Dockerfile$/"],
       "matchStrings": [
-        "ARG VERSION=\"(?<currentValue>[^\"]+)\""
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sARG .*?VERSION=\"(?<currentValue>.*)\"\\s"
       ],
-      "depNameTemplate": "dnsmasq",
-      "datasourceTemplate": "repology",
-      "lookupNameTemplate": "dnsmasq"
-    }
-  ],
-  "packageRules": [
-    {
-      "matchDatasources": ["repology"],
-      "matchPackageNames": ["dnsmasq"],
-      "versioning": "loose",
-      "separateMinorPatch": true,
-      "prBodyTemplate": "This PR updates dnsmasq from {{currentVersion}} to {{newVersion}}.\n\nRelease notes: https://thekelleys.org.uk/dnsmasq/CHANGELOG"
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ]
 }

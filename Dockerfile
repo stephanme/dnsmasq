@@ -1,5 +1,6 @@
 FROM alpine:3 AS build
 
+# renovate: datasource=repology depName=alpine_edge/dnsmasq
 ARG VERSION="2.90"
 
 # Add dnsmasq archive and signature
