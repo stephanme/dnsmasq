@@ -1,7 +1,7 @@
 FROM alpine:3 AS build
 
 # renovate: datasource=repology depName=nix_unstable/dnsmasq versioning=semver-coerced
-ARG VERSION="2.91"
+ARG VERSION="2.92"
 
 # Add dnsmasq archive and signature
 ADD https://thekelleys.org.uk/dnsmasq/dnsmasq-$VERSION.tar.gz /tmp/dnsmasq.tar.gz
